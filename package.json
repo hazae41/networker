@@ -1,0 +1,58 @@
+{
+  "type": "module",
+  "name": "@hazae41/networker",
+  "version": "0.0.0",
+  "description": "Generate Network secrets in a worker",
+  "homepage": "https://github.com/hazae41/networker",
+  "repository": "github:hazae41/networker",
+  "author": "hazae41",
+  "license": "MIT",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "./dist/esm",
+    "./dist/cjs",
+    "./dist/types"
+  ],
+  "scripts": {
+    "build:worker": "rimraf dist && rollup -c rollup.worker.config.js",
+    "build:library": "node bundle.mjs && rollup -c rollup.library.config.js",
+    "build": "npm run build:worker && npm run build:library",
+    "test": "deno ./dist/test/index.test.mjs",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "@hazae41/network.wasm": "^1.0.0",
+    "@hazae41/phobos": "^1.0.10",
+    "@hazae41/rimraf": "^1.0.1",
+    "@hazae41/symbol-dispose-polyfill": "^1.0.2",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@swc/core": "^1.7.18",
+    "@types/node": "^20.11.16",
+    "@types/react": "^18.3.3",
+    "rollup": "^4.9.6",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-node-externals": "^7.0.1",
+    "rollup-plugin-swc3": "^0.11.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
+  "keywords": [
+    "typescript",
+    "esmodules",
+    "tested",
+    "unit-tested"
+  ],
+  "dependencies": {
+    "@hazae41/box": "^2.0.1",
+    "@hazae41/future": "^1.0.3",
+    "@hazae41/option": "^1.0.27"
+  }
+}
