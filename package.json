@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@hazae41/networker",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Generate Network secrets in a worker",
   "homepage": "https://github.com/hazae41/networker",
   "repository": "github:hazae41/networker",
