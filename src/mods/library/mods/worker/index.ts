@@ -1,7 +1,7 @@
 import { Deferred, Stack } from "@hazae41/box";
 import { Future } from "@hazae41/future";
 import { RpcCounter, RpcRequestPreinit, RpcResponse, RpcResponseInit } from "@hazae41/jsonrpc";
-import { NetworkCreateParams, NetworkGenerateResult } from "mods/common/index.js";
+import { NetWorkerCreateParams, NetWorkerGenerateResult } from "mods/common/index.js";
 import { DisWorker } from "mods/library/libs/disworker/index.js";
 import { data } from "../data/index.js";
 
@@ -43,7 +43,7 @@ export class NetWorker extends DisWorker {
     return await future.promise
   }
 
-  async createOrThrow(params: NetworkCreateParams) {
+  async createOrThrow(params: NetWorkerCreateParams) {
     const uuid = await this.requestOrThrow<string>({
       method: "net_create",
       params: [params]
@@ -69,7 +69,7 @@ export class NetMixin {
   }
 
   async generateOrThrow(minimumZeroHex: string) {
-    return await this.worker.requestOrThrow<NetworkGenerateResult>({
+    return await this.worker.requestOrThrow<NetWorkerGenerateResult>({
       method: "net_generate",
       params: [this.uuid, minimumZeroHex]
     }).then(r => r.getOrThrow())

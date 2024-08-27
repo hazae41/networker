@@ -3,12 +3,12 @@ import "@hazae41/symbol-dispose-polyfill";
 import { RpcMethodNotFoundError, RpcRequestInit, RpcRequestPreinit, RpcResponse } from "@hazae41/jsonrpc";
 import { NetworkMixin, NetworkWasm } from "@hazae41/network.wasm";
 import { Catched, Err, Ok } from "@hazae41/result";
-import { NetworkCreateParams } from "mods/common/index.js";
+import { NetWorkerCreateParams } from "mods/common/index.js";
 
 const mixins = new Map<string, NetworkMixin>()
 
 async function createOrThrow(request: RpcRequestPreinit<unknown>) {
-  const [params] = (request as RpcRequestPreinit<[NetworkCreateParams]>).params
+  const [params] = (request as RpcRequestPreinit<[NetWorkerCreateParams]>).params
 
   const { chainIdString, contractZeroHex, receiverZeroHex, nonceZeroHex } = params
 
