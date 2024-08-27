@@ -1,4 +1,4 @@
-export class Disworker extends Worker {
+export class DisWorker extends Worker {
 
   [Symbol.dispose]() {
     this.terminate()

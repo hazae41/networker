@@ -4,9 +4,11 @@
     "specifiers": {
       "npm:@hazae41/box@^2.0.1": "npm:@hazae41/box@2.0.1",
       "npm:@hazae41/future@^1.0.3": "npm:@hazae41/future@1.0.3",
+      "npm:@hazae41/jsonrpc@^1.0.7": "npm:@hazae41/jsonrpc@1.0.7",
       "npm:@hazae41/network.wasm@^1.0.0": "npm:@hazae41/network.wasm@1.0.0_@hazae41+base16.wasm@1.0.5__@hazae41+memory.wasm@1.0.9_@hazae41+memory.wasm@1.0.9_@hazae41+sha3.wasm@1.0.4__@hazae41+memory.wasm@1.0.9",
       "npm:@hazae41/option@^1.0.27": "npm:@hazae41/option@1.1.3",
       "npm:@hazae41/phobos@^1.0.10": "npm:@hazae41/phobos@1.0.10",
+      "npm:@hazae41/result@^1.3.1": "npm:@hazae41/result@1.3.1",
       "npm:@hazae41/rimraf@^1.0.1": "npm:@hazae41/rimraf@1.0.1",
       "npm:@hazae41/symbol-dispose-polyfill@^1.0.2": "npm:@hazae41/symbol-dispose-polyfill@1.0.2",
       "npm:@rollup/plugin-node-resolve@^15.2.3": "npm:@rollup/plugin-node-resolve@15.2.3_rollup@4.21.1",
@@ -56,6 +58,12 @@
       "@hazae41/future@1.0.3": {
         "integrity": "sha512-tc6xV7buZI1P8d66OTH7noD5L3fKCZpTOfyvlVMIcjqvkY/gRcBinFzegc6DmXx08ZlwfAlnebU+ZX5NO+9+iw==",
         "dependencies": {}
+      },
+      "@hazae41/jsonrpc@1.0.7": {
+        "integrity": "sha512-a7UUMmtsq+8vnnJpGW+WsQz/m5m3Y1mbDxiE177D7gZ3aeUE3/Id04+0ryBRyqF3dm/5bFq/tYiv39fiZOz2Pw==",
+        "dependencies": {
+          "@hazae41/result": "@hazae41/result@1.3.1"
+        }
       },
       "@hazae41/memory.wasm@1.0.9": {
         "integrity": "sha512-bI7zYPODlQsRm2006WIBD/Vno9ONFwr5Gvkq89qUUSS+e2Qv56+RMl6Xcmsnhb9x622DPx4ty3QImD4WVknsMQ==",
@@ -480,9 +488,11 @@
       "dependencies": [
         "npm:@hazae41/box@^2.0.1",
         "npm:@hazae41/future@^1.0.3",
+        "npm:@hazae41/jsonrpc@^1.0.7",
         "npm:@hazae41/network.wasm@^1.0.0",
         "npm:@hazae41/option@^1.0.27",
         "npm:@hazae41/phobos@^1.0.10",
+        "npm:@hazae41/result@^1.3.1",
         "npm:@hazae41/rimraf@^1.0.1",
         "npm:@hazae41/symbol-dispose-polyfill@^1.0.2",
         "npm:@rollup/plugin-node-resolve@^15.2.3",
