@@ -1,3 +1,4 @@
+import { assert } from "@hazae41/phobos";
 import { NetWorker } from "./worker/index.js";
 
 using worker = new NetWorker()
@@ -9,12 +10,13 @@ const nonceZeroHex = "0x9537efb9ece40a1d72241f1fd5dcbb32e8eae43df579d02bf861b339
 
 await using mixin = await worker.createOrThrow({ chainIdString, contractZeroHex, receiverZeroHex, nonceZeroHex })
 
-const minimumZeroHex = "0x0000000000000000000000000000000000000000000000000000000000000001"
+const minimumZeroHex = "0x0000000000000000000000000000000000000000000000000000000000100000"
 
 const { secretZeroHex, proofZeroHex } = await mixin.generateOrThrow(minimumZeroHex)
 
 const proofValueZeroHex = await mixin.verifyProofOrThrow(proofZeroHex)
 const secretValueZeroHex = await mixin.verifySecretOrThrow(secretZeroHex)
 
-console.log(proofValueZeroHex)
-console.log(secretValueZeroHex)
+assert(proofValueZeroHex === secretValueZeroHex)
+
+console.log(`Generated ${BigInt(secretValueZeroHex)} wei`)
