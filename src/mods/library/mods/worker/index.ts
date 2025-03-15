@@ -89,4 +89,18 @@ export class NetMixin {
     }).then(r => r.getOrThrow())
   }
 
+  async verifyProofsOrThrow(proofsZeroHexArray: string[]) {
+    return await this.worker.requestOrThrow<string>({
+      method: "net_verify_proofs",
+      params: [this.uuid, proofsZeroHexArray]
+    }).then(r => r.getOrThrow())
+  }
+
+  async verifySecretsOrThrow(secretsZeroHexArray: string[]) {
+    return await this.worker.requestOrThrow<string>({
+      method: "net_verify_secrets",
+      params: [this.uuid, secretsZeroHexArray]
+    }).then(r => r.getOrThrow())
+  }
+
 }
