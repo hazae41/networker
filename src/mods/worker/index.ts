@@ -100,60 +100,6 @@ async function verifySecretOrThrow(request: RpcRequestPreinit<unknown>) {
   return valueZeroHex
 }
 
-async function verifyProofsOrThrow(request: RpcRequestPreinit<unknown>) {
-  const [uuid, proofsZeroHexArray] = (request as RpcRequestPreinit<[string, string[]]>).params
-
-  const mixinStruct = mixins.get(uuid)
-
-  if (mixinStruct == null)
-    throw new Error("Not found")
-
-  const totalBigIntSlot = { current: 0n }
-
-  for (const proofZeroHex of proofsZeroHexArray) {
-    const proofBase16 = proofZeroHex.slice(2).padStart(64, "0")
-    using proofMemory = NetworkWasm.base16_decode_mixed(proofBase16)
-
-    using valueMemory = mixinStruct.verify_proof(proofMemory)
-    const valueBase16 = NetworkWasm.base16_encode_lower(valueMemory)
-    const valueZeroHex = `0x${valueBase16}`
-    const valueBigInt = BigInt(valueZeroHex)
-
-    totalBigIntSlot.current += valueBigInt
-  }
-
-  const totalZeroHex = `0x${totalBigIntSlot.current.toString(16)}`
-
-  return totalZeroHex
-}
-
-async function verifySecretsOrThrow(request: RpcRequestPreinit<unknown>) {
-  const [uuid, secretsZeroHexArray] = (request as RpcRequestPreinit<[string, string[]]>).params
-
-  const mixinStruct = mixins.get(uuid)
-
-  if (mixinStruct == null)
-    throw new Error("Not found")
-
-  const totalBigIntSlot = { current: 0n }
-
-  for (const secretZeroHex of secretsZeroHexArray) {
-    const secretBase16 = secretZeroHex.slice(2).padStart(64, "0")
-    using secretMemory = NetworkWasm.base16_decode_mixed(secretBase16)
-
-    using valueMemory = mixinStruct.verify_secret(secretMemory)
-    const valueBase16 = NetworkWasm.base16_encode_lower(valueMemory)
-    const valueZeroHex = `0x${valueBase16}`
-    const valueBigInt = BigInt(valueZeroHex)
-
-    totalBigIntSlot.current += valueBigInt
-  }
-
-  const totalZeroHex = `0x${totalBigIntSlot.current.toString(16)}`
-
-  return totalZeroHex
-}
-
 async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
   try {
     if (request.method === "net_create")
@@ -166,10 +112,6 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
       return new Ok(await verifySecretOrThrow(request))
     if (request.method === "net_verify_proof")
       return new Ok(await verifyProofOrThrow(request))
-    if (request.method === "net_verify_secrets")
-      return new Ok(await verifySecretsOrThrow(request))
-    if (request.method === "net_verify_proofs")
-      return new Ok(await verifyProofsOrThrow(request))
 
     return new Err(new RpcMethodNotFoundError())
   } catch (e: unknown) {
