@@ -13,19 +13,24 @@ async function createOrThrow(request: RpcRequestPreinit<unknown>) {
   const { contractZeroHex, receiverZeroHex, nonceZeroHex } = params
 
   const uuid = crypto.randomUUID()
+  console.debug(`Creating mixin with uuid: ${uuid}`)
 
   await NetworkWasm.initBundled()
 
   const contractBase16 = contractZeroHex.slice(2).padStart(64, "0")
   using contractMemory = NetworkWasm.base16_decode_mixed(contractBase16)
+  console.debug(`Contract: ${contractZeroHex} ${contractMemory.ptr}`)
 
   const receiverBase16 = receiverZeroHex.slice(2).padStart(64, "0")
   using receiverMemory = NetworkWasm.base16_decode_mixed(receiverBase16)
+  console.debug(`Receiver: ${receiverZeroHex} ${receiverMemory.ptr}`)
 
   const nonceBase16 = nonceZeroHex.slice(2).padStart(64, "0")
   using nonceMemory = NetworkWasm.base16_decode_mixed(nonceBase16)
+  console.debug(`Nonce: ${nonceZeroHex} ${nonceMemory.ptr}`)
 
   const mixinStruct = new NetworkMixin(contractMemory, receiverMemory, nonceMemory)
+  console.debug(`Mixin: ${mixinStruct}`)
 
   mixins.set(uuid, mixinStruct)
 
@@ -115,7 +120,6 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 
     return new Err(new RpcMethodNotFoundError())
   } catch (e: unknown) {
-    console.warn(request.method, { e })
     return new Err(RpcError.rewrap(e))
   }
 }
@@ -123,6 +127,5 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 self.addEventListener("message", async (e: MessageEvent<RpcRequestInit<unknown>>) => {
   const result = await routeAndWrap(e.data)
   const response = RpcResponse.rewrap(e.data.id, result)
-  console.log(response)
   self.postMessage(response)
 })
