@@ -115,7 +115,7 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 
     return new Err(new RpcMethodNotFoundError())
   } catch (e: unknown) {
-    console.warn(request.method, { e })
+    console.warn(request.method, { e }, { e: (e as Error).cause })
     return new Err(RpcError.rewrap(e))
   }
 }
