@@ -1,8 +1,8 @@
 import "@hazae41/symbol-dispose-polyfill";
 
-import { RpcMethodNotFoundError, RpcRequestInit, RpcRequestPreinit, RpcResponse } from "@hazae41/jsonrpc";
+import { RpcError, RpcMethodNotFoundError, RpcRequestInit, RpcRequestPreinit, RpcResponse } from "@hazae41/jsonrpc";
 import { NetworkMixin, NetworkWasm } from "@hazae41/network.wasm";
-import { Catched, Err, Ok } from "@hazae41/result";
+import { Err, Ok } from "@hazae41/result";
 import { NetWorkerCreateParams } from "mods/common/index.js";
 
 const mixins = new Map<string, NetworkMixin>()
@@ -115,7 +115,8 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 
     return new Err(new RpcMethodNotFoundError())
   } catch (e: unknown) {
-    return new Err(Catched.wrap(e))
+    console.warn(request.method, { e })
+    return new Err(RpcError.rewrap(e))
   }
 }
 
