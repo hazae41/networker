@@ -13,21 +13,20 @@ async function createOrThrow(request: RpcRequestPreinit<unknown>) {
   const { contractZeroHex, receiverZeroHex, nonceZeroHex } = params
 
   const uuid = crypto.randomUUID()
-  console.debug(`Creating mixin with uuid: ${uuid}`)
 
   await NetworkWasm.initBundled()
 
   const contractBase16 = contractZeroHex.slice(2).padStart(64, "0")
   using contractMemory = NetworkWasm.base16_decode_mixed(contractBase16)
-  console.debug(`Contract: ${contractZeroHex} ${contractMemory.ptr}`)
+  console.debug(`Contract: ${contractBase16} ${contractMemory.ptr}`)
 
   const receiverBase16 = receiverZeroHex.slice(2).padStart(64, "0")
   using receiverMemory = NetworkWasm.base16_decode_mixed(receiverBase16)
-  console.debug(`Receiver: ${receiverZeroHex} ${receiverMemory.ptr}`)
+  console.debug(`Receiver: ${receiverBase16} ${receiverMemory.ptr}`)
 
   const nonceBase16 = nonceZeroHex.slice(2).padStart(64, "0")
   using nonceMemory = NetworkWasm.base16_decode_mixed(nonceBase16)
-  console.debug(`Nonce: ${nonceZeroHex} ${nonceMemory.ptr}`)
+  console.debug(`Nonce: ${nonceBase16} ${nonceMemory.ptr}`)
 
   const mixinStruct = new NetworkMixin(contractMemory, receiverMemory, nonceMemory)
   console.debug(`Mixin: ${mixinStruct}`)
