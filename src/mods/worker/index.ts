@@ -115,7 +115,7 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 
     return new Err(new RpcMethodNotFoundError())
   } catch (e: unknown) {
-    console.warn(request.method, { e }, { e: (e as Error).cause })
+    console.warn(request.method, { e })
     return new Err(RpcError.rewrap(e))
   }
 }
@@ -123,5 +123,6 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 self.addEventListener("message", async (e: MessageEvent<RpcRequestInit<unknown>>) => {
   const result = await routeAndWrap(e.data)
   const response = RpcResponse.rewrap(e.data.id, result)
+  console.log(response)
   self.postMessage(response)
 })
