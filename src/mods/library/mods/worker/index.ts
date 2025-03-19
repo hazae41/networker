@@ -7,11 +7,8 @@ import { data } from "../data/index.js";
 
 export class NetWorker extends DisWorker {
 
+  readonly worker = new Worker(data, { type: "module" })
   readonly counter = new RpcCounter()
-
-  constructor() {
-    super(data, { type: "module" });
-  }
 
   async requestOrThrow<T>(prerequest: RpcRequestPreinit<unknown>) {
     using stack = new Stack()
@@ -25,20 +22,20 @@ export class NetWorker extends DisWorker {
       future.resolve(RpcResponse.from(e.data))
     }
 
-    this.addEventListener("message", onMessage, { passive: true })
-    stack.push(new Deferred(() => this.removeEventListener("message", onMessage)))
+    this.worker.addEventListener("message", onMessage, { passive: true })
+    stack.push(new Deferred(() => this.worker.removeEventListener("message", onMessage)))
 
     const onError = () => future.reject(new Error("Errored"))
 
-    this.addEventListener("error", onError, { passive: true })
-    stack.push(new Deferred(() => this.removeEventListener("error", onError)))
+    this.worker.addEventListener("error", onError, { passive: true })
+    stack.push(new Deferred(() => this.worker.removeEventListener("error", onError)))
 
     const onMessageError = (cause: unknown) => future.reject(new Error("Errored", { cause }))
 
-    this.addEventListener("messageerror", onMessageError, { passive: true })
-    stack.push(new Deferred(() => this.removeEventListener("messageerror", onMessageError)))
+    this.worker.addEventListener("messageerror", onMessageError, { passive: true })
+    stack.push(new Deferred(() => this.worker.removeEventListener("messageerror", onMessageError)))
 
-    this.postMessage(request)
+    this.worker.postMessage(request)
 
     return await future.promise
   }

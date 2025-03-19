@@ -1,7 +1,9 @@
-export class DisWorker extends Worker {
+export abstract class DisWorker {
+
+  readonly abstract worker: Worker
 
   [Symbol.dispose]() {
-    this.terminate()
+    this.worker.terminate()
   }
 
 }
