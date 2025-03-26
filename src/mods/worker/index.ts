@@ -3,18 +3,18 @@ import "@hazae41/symbol-dispose-polyfill";
 import { RpcError, RpcMethodNotFoundError, RpcRequestInit, RpcRequestPreinit, RpcResponse } from "@hazae41/jsonrpc";
 import { NetworkMixin, NetworkWasm } from "@hazae41/network.wasm";
 import { Err, Ok } from "@hazae41/result";
-import { NetWorkerCreateParams } from "mods/common/index.js";
+import { NetWorkerCreateParams, NetWorkerGenerateResult } from "mods/common/index.js";
+
+await NetworkWasm.initBundled()
 
 const mixins = new Map<string, NetworkMixin>()
 
-async function createOrThrow(request: RpcRequestPreinit<unknown>) {
+function createOrThrow(request: RpcRequestPreinit<unknown>) {
   const [params] = (request as RpcRequestPreinit<[NetWorkerCreateParams]>).params
 
   const { contractZeroHex, receiverZeroHex, nonceZeroHex } = params
 
   const uuid = crypto.randomUUID()
-
-  await NetworkWasm.initBundled()
 
   const contractBase16 = contractZeroHex.slice(2).padStart(64, "0")
   using contractMemory = NetworkWasm.base16_decode_mixed(contractBase16)
@@ -32,7 +32,7 @@ async function createOrThrow(request: RpcRequestPreinit<unknown>) {
   return uuid
 }
 
-async function destroyOrThrow(request: RpcRequestPreinit<unknown>) {
+function destroyOrThrow(request: RpcRequestPreinit<unknown>) {
   const [uuid] = (request as RpcRequestPreinit<[string]>).params
 
   using _ = mixins.get(uuid)
@@ -40,7 +40,7 @@ async function destroyOrThrow(request: RpcRequestPreinit<unknown>) {
   mixins.delete(uuid)
 }
 
-async function generateOrThrow(request: RpcRequestPreinit<unknown>) {
+function generateOrThrow(request: RpcRequestPreinit<unknown>): NetWorkerGenerateResult {
   const [uuid, minimumZeroHex] = (request as RpcRequestPreinit<[string, string]>).params
 
   const mixinStruct = mixins.get(uuid)
@@ -68,7 +68,7 @@ async function generateOrThrow(request: RpcRequestPreinit<unknown>) {
   return { secretZeroHex, proofZeroHex, valueZeroHex }
 }
 
-async function verifyProofOrThrow(request: RpcRequestPreinit<unknown>) {
+function verifyProofOrThrow(request: RpcRequestPreinit<unknown>) {
   const [uuid, proofZeroHex] = (request as RpcRequestPreinit<[string, string]>).params
 
   const mixinStruct = mixins.get(uuid)
@@ -86,7 +86,7 @@ async function verifyProofOrThrow(request: RpcRequestPreinit<unknown>) {
   return valueZeroHex
 }
 
-async function verifySecretOrThrow(request: RpcRequestPreinit<unknown>) {
+function verifySecretOrThrow(request: RpcRequestPreinit<unknown>) {
   const [uuid, secretZeroHex] = (request as RpcRequestPreinit<[string, string]>).params
 
   const mixinStruct = mixins.get(uuid)
@@ -104,18 +104,18 @@ async function verifySecretOrThrow(request: RpcRequestPreinit<unknown>) {
   return valueZeroHex
 }
 
-async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
+function routeAndWrap(request: RpcRequestPreinit<unknown>) {
   try {
     if (request.method === "net_create")
-      return new Ok(await createOrThrow(request))
+      return new Ok(createOrThrow(request))
     if (request.method === "net_destroy")
-      return new Ok(await destroyOrThrow(request))
+      return new Ok(destroyOrThrow(request))
     if (request.method === "net_generate")
-      return new Ok(await generateOrThrow(request))
+      return new Ok(generateOrThrow(request))
     if (request.method === "net_verify_secret")
-      return new Ok(await verifySecretOrThrow(request))
+      return new Ok(verifySecretOrThrow(request))
     if (request.method === "net_verify_proof")
-      return new Ok(await verifyProofOrThrow(request))
+      return new Ok(verifyProofOrThrow(request))
 
     return new Err(new RpcMethodNotFoundError())
   } catch (e: unknown) {
@@ -124,7 +124,7 @@ async function routeAndWrap(request: RpcRequestPreinit<unknown>) {
 }
 
 self.addEventListener("message", async (e: MessageEvent<RpcRequestInit<unknown>>) => {
-  const result = await routeAndWrap(e.data)
+  const result = routeAndWrap(e.data)
   const response = RpcResponse.rewrap(e.data.id, result)
   self.postMessage(response)
 })

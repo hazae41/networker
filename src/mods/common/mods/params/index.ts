@@ -7,4 +7,5 @@ export interface NetWorkerCreateParams {
 export interface NetWorkerGenerateResult {
   readonly secretZeroHex: string
   readonly proofZeroHex: string
+  readonly valueZeroHex: string
 }
