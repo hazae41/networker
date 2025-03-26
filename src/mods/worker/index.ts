@@ -61,7 +61,11 @@ async function generateOrThrow(request: RpcRequestPreinit<unknown>) {
   const secretBase16 = NetworkWasm.base16_encode_lower(secretMemory)
   const secretZeroHex = `0x${secretBase16}`
 
-  return { secretZeroHex, proofZeroHex }
+  using valueMemory = generatedStruct.to_value()
+  const valueBase16 = NetworkWasm.base16_encode_lower(valueMemory)
+  const valueZeroHex = `0x${valueBase16}`
+
+  return { secretZeroHex, proofZeroHex, valueZeroHex }
 }
 
 async function verifyProofOrThrow(request: RpcRequestPreinit<unknown>) {
