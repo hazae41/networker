@@ -12,20 +12,20 @@ const mixins = new Map<string, NetworkMixin>()
 function createOrThrow(request: RpcRequestPreinit<unknown>) {
   const [params] = (request as RpcRequestPreinit<[NetWorkerCreateParams]>).params
 
-  const { contractZeroHex, receiverZeroHex, nonceZeroHex } = params
+  const { versionZeroHex, addressZeroHex, nonceZeroHex } = params
 
   const uuid = crypto.randomUUID()
 
-  const contractBase16 = contractZeroHex.slice(2).padStart(64, "0")
-  using contractMemory = NetworkWasm.base16_decode_mixed(contractBase16)
+  const versionBase16 = versionZeroHex.slice(2).padStart(64, "0")
+  using versionMemory = NetworkWasm.base16_decode_mixed(versionBase16)
 
-  const receiverBase16 = receiverZeroHex.slice(2).padStart(64, "0")
-  using receiverMemory = NetworkWasm.base16_decode_mixed(receiverBase16)
+  const addressBase16 = addressZeroHex.slice(2).padStart(64, "0")
+  using addressMemory = NetworkWasm.base16_decode_mixed(addressBase16)
 
   const nonceBase16 = nonceZeroHex.slice(2).padStart(64, "0")
   using nonceMemory = NetworkWasm.base16_decode_mixed(nonceBase16)
 
-  const mixinStruct = new NetworkMixin(contractMemory, receiverMemory, nonceMemory)
+  const mixinStruct = new NetworkMixin(versionMemory, addressMemory, nonceMemory)
 
   mixins.set(uuid, mixinStruct)
 

@@ -1,6 +1,6 @@
 export interface NetWorkerCreateParams {
-  readonly contractZeroHex: string
-  readonly receiverZeroHex: string
+  readonly versionZeroHex: string
+  readonly addressZeroHex: string
   readonly nonceZeroHex: string
 }
 
